@@ -25,10 +25,8 @@
 <div id="chatStatus" class="status" style="padding:0 12px"></div></section></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ВСТАВЬ сюда Project URL и Publishable key из Supabase.
-   Никогда не вставляй sb_secret_ или service_role key. */
-const SUPABASE_URL = "ВСТАВЬ_PROJECT_URL";
-const SUPABASE_PUBLISHABLE_KEY = "ВСТАВЬ_PUBLISHABLE_KEY";
+const SUPABASE_URL = "https://supabase.com/dashboard/project/gjdczgqxybibriyspcmr/settings/api⁠";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_LBos_w6_2lwV75pdi0W1pw_VGiFgC8z";
 const $=id=>document.getElementById(id);
 let db=null, me=null, selected=null, live=null, profiles=[];
 function say(id,msg,ok=false){$(id).textContent=msg;$(id).style.color=ok?"#167b43":"#b44332"}
