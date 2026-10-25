@@ -1,0 +1,9 @@
+{
+  "name": "GhostChat",
+  "short_name": "GhostChat",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3390ec",
+  "description": "GhostChat — мессенджер в стиле Telegram"
+}
