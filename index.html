@@ -29,6 +29,60 @@
 const SUPABASE_URL = "https://gjdczgqxybibriyspcmr.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_LBos_w6_2lwV75pdi0W1pw_VGiFgC8z";
 const $=id=>document.getElementById(id);
+
+const VAPID_PUBLIC_KEY = "BKFMxIKhA7EX1Fa7u-6l9A4zz0yJJlXOZXaugVCof1K2kKnvg8xrvWsd-UYwe7qsC-puSedJNvrM9PjlRvxtIds";
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+  const raw = atob(base64);
+  return Uint8Array.from(raw, (char) => char.charCodeAt(0));
+}
+
+async function enablePush() {
+  try {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+      alert("Этот браузер не поддерживает push-уведомления.");
+      return;
+    }
+
+    if (!me) {
+      alert("Сначала войди в GhostChat.");
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      alert("Разреши уведомления в настройках телефона.");
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.register("./sw.js");
+    await navigator.serviceWorker.ready;
+
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+
+    const { error } = await db.from("push_subscriptions").upsert({
+      user_id: me.id,
+      endpoint: subscription.endpoint,
+      subscription: subscription.toJSON()
+    }, { onConflict: "endpoint" });
+
+    if (error) throw error;
+
+    alert("Уведомления GhostChat подключены! 🔔");
+  } catch (error) {
+    console.error(error);
+    alert("Не удалось подключить уведомления: " + error.message);
+  }
+}
+
 let db=null, me=null, selected=null, live=null, profiles=[];
 function say(id,msg,ok=false){$(id).textContent=msg;$(id).style.color=ok?"#167b43":"#b44332"}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
